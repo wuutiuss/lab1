@@ -1,4 +1,4 @@
-def is_prime(n):
+def is_prime(n: int) -> bool:
     """
     Проверяет является ли число простым, используюя перебор делителей от 2 до корня из n
 
@@ -17,7 +17,7 @@ def is_prime(n):
     return True
 
 
-def gcd(a, b):
+def gcd(a: int, b: int) -> int:
     """
     Находит наибольший общий делитель двух чисел, используя алгоритм Евклида
 
@@ -34,7 +34,7 @@ def gcd(a, b):
     return a
 
 
-def  multiplicative_inverse(e, phi):
+def multiplicative_inverse(e: int, phi:int) -> int:
     """
     Находит обратный элемент для е по модулю phi. Ищет число d, такое что (e*d)% phi ==1
 
@@ -51,7 +51,9 @@ def  multiplicative_inverse(e, phi):
             return d
 
 
-def generate_keypair(p,q): #Выбираем два случайных простых числа p и q
+
+def generate_keypair(p: int, q: int) -> tuple[tuple[int, int], tuple[int, int]]:
+ #Выбираем два случайных простых числа p и q
     """
     Генерирует пару ключей RSA (публичный и приватный) на основе двух простых чисел.
     Вычисляет n = p * q и функция Эйлера phi = (p-1)*(q-1)
@@ -89,7 +91,7 @@ def generate_keypair(p,q): #Выбираем два случайных прос�
     return (public_key, private_key)
 
 
-def encrypt(public_key, text):
+def encrypt(public_key: tuple[int, int], text: str) -> list[int]:
     """
     Шифрует текст с использованием открытого ключа RSA по форммуле C=M**e mod n
 
@@ -114,7 +116,7 @@ def encrypt(public_key, text):
     return cipher_list
 
 
-def decrypt(private_key, cipher_list):
+def decrypt(private_key: tuple[int, int], cipher_list: list[int]) -> str:
     """
     Расшифровывает список чисел, зашифрованных с помощью RSA( по формуле M=C**d mod n), обратно в текст
 
