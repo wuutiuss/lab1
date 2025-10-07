@@ -5,14 +5,16 @@
 1)encrypt: выполняет символьное шифрование строки со сдвигом символов
 2)decrypt: расшифровывает строку, зашифрованную с помощью "encrypt".
 """
+from lab1.caesar import ALPHABET
+
+ASCII_START: int = 32
+ASCII_END: int = 126
+ALPHABET_SIZE: int = ASCII_END - ASCII_START + 1
 
 
-
-def encrypt(plaintext, keyword):
+def encrypt(plaintext: str, keyword: str) -> str:
     """
-    Шифрует  все печатные символы ASCII (с кодами от 32 до 126 включительно) с использованием ключа по принципу шифра Виженера.
-    Ключевое слово (keyword) применяется циклически.
-    Символы в ключевом слове нечувствительны к регистру ('A' и 'a' эквивалентны сдвигу на 0, 'B' и 'b' — на 1, и т.д.).
+      Шифрует все печатные символы ASCII с использованием ключа по принципу шифра Виженера
 
     Args:
         plaintext (str): Входная строка для шифрования.
@@ -37,18 +39,13 @@ def encrypt(plaintext, keyword):
     for symbol in plaintext:
         code= ord(symbol)
 
-        if 32<=code<126:
-            if k>=len(keyword): #Если мы дошли до конца ключа, то ключевое слово (keyword) применяем циклически
-                k=0
-            shift  =ord(keyword[k])-ord('A')#Вычитаем А чтобы получить сдвиг в диапазоне 0-25
-            shifted_code= shift+code
+        if ASCII_START <= code <= ASCII_END:
+            shift = ord(keyword[k]) - ord('A')
 
-            while shifted_code>126:
-                shifted_code=shifted_code-95
-            while shifted_code<32:
-                shifted_code=shifted_code+95
-            result = result + chr(shifted_code)
-            k+=1
+            shifted_code = ASCII_START + (code - ASCII_START + shift) % ALPHABET_SIZE
+            result += chr(shifted_code)
+
+            k = (k + 1) % len(keyword)
 
         else:
             result += symbol
@@ -58,10 +55,7 @@ def encrypt(plaintext, keyword):
 
 def decrypt(ciphertext, keyword):
     """
-       Дешифрует  все печатные символы ASCII (с кодами от 32 до 126 включительно) с использованием ключа по принципу шифра Виженера.
-       Ключевое слово (keyword) применяется циклически.
-       Символы в ключевом слове нечувствительны к регистру ('A' и 'a' эквивалентны сдвигу на 0, 'B' и 'b' — на 1, и т.д.).
-
+    Дешифрует все печатные символы ASCII с использованием ключа по принципу шифра Виженера
 
        Args:
            ciphertext (str): Входная строка для расшифровки.
@@ -74,12 +68,10 @@ def decrypt(ciphertext, keyword):
     for symbol in keyword:#В этом модуле мы проверяем является ли символ буквой и формируем ключ
         if symbol.isalpha():
             new_keyword += symbol
-    keyword = new_keyword
-
     keyword = new_keyword.upper()  # Переводим буквы в верхний регистр чтобы стандартизировать все буквы ключа
 
     if len(keyword)==0:
-        return plaintext
+        return ciphertext
 
     result = ''
     k = 0 #Создаем счетчик для цикличного использования буквы ключа
@@ -87,19 +79,14 @@ def decrypt(ciphertext, keyword):
     for symbol in ciphertext:
         code = ord(symbol)
 
-        if 32 <= code < 126:
-            if k >= len(keyword): #Если мы дошли до конца ключа, то ключевое слово (keyword) применяем циклически
-                k = 0
-            shift =ord(keyword[k])-ord('A')#Вычитаем А чтобы получить сдвиг в диапазоне 0-25
-            shifted_code= code - shift
+        if ASCII_START <= code <= ASCII_END:
 
-            while shifted_code > 126:
-                shifted_code = shifted_code - 95
-            while shifted_code < 32:
-                shifted_code = shifted_code + 95
+            shift = ord(keyword[k]) - ord('A')
 
-            result = result + chr(shifted_code)
-            k+=1
+            shifted_code = ASCII_START + (code - ASCII_START - shift) % ALPHABET_SIZE
+            result += chr(shifted_code)
+
+            k = (k + 1) % len(keyword)
 
         else:
             result += symbol
@@ -107,7 +94,4 @@ def decrypt(ciphertext, keyword):
     return result
 
 
-a='itmo'
-keyword='mom'
-print(encrypt(a,keyword))
-print(decrypt(encrypt(a,keyword),keyword))
+print(encrypt("atack at dawn", "LEMON"))
